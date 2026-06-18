@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusKudi Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --pink: #E91E8C;
+      --pink-light: #FCE4F3;
+      --pink-dark: #B0146A;
+      --black: #1A1A1A;
+      --gray: #F7F3F5;
+      --gray2: #EDE8EA;
+      --gray3: #9A8F93;
+      --white: #FFFFFF;
+      --font-display: 'Playfair Display', serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--gray);
+      color: var(--black);
+    }
+
+    .admin-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: 260px;
+      background: var(--white);
+      border-right: 1px solid var(--gray2);
+      padding: 2rem 0;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--pink);
+      padding: 0 1.5rem;
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+    }
+
+    .sidebar-menu li {
+      margin: 0;
+    }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      color: var(--black);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-menu a:hover,
+    .sidebar-menu a.active {
+      background: var(--pink-light);
+      border-left-color: var(--pink);
+      color: var(--pink);
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+      flex: 1;
+      margin-left: 260px;
+      padding: 2rem;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--white);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .header h1 {
+      font-size: 1.8rem;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn-logout {
+      background: var(--pink);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.5rem;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: var(--pink-dark);
+    }
+
+    /* ===== CARDS ===== */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--white);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .stat-card-label {
+      color: var(--gray3);
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-card-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card-change {
+      font-size: 0.85rem;
+      color: #10B981;
+    }
+
+    /* ===== SECTIONS ===== */
+    .section {
+      display: none;
+      animation: fadeIn 0.3s;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+    }
+
+    /* ===== TABLES ===== */
+    .table-container {
+      background: var(--white);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table th {
+      background: var(--gray);
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray3);
+      border-bottom: 1px solid var(--gray2);
+    }
+
+    .table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--gray2);
+    }
+
+    .table tr:hover {
+      background: var(--gray);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.4rem 0.8rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-pending {
+      background: #FEF3C7;
+      color: #92400E;
+    }
+
+    .status-completed {
+      background: #D1FAE5;
+      color: #065F46;
+    }
+
+    .status-processing {
+      background: #DBEAFE;
+      color: #1E40AF;
+    }
+
+    .status-approved {
+      background: #D1FAE5;
+      color: #065F46;
+    }
+
+    .status-rejected {
+      background: #FEE2E2;
+      color: #7F1D1D;
+    }
+
+    /* ===== FORMS ===== */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--gray2);
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .btn-primary {
+      background: var(--pink);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--pink-dark);
+    }
+
+    .btn-secondary {
+      background: var(--gray);
+      color: var(--black);
+      border: 1px solid var(--gray2);
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: var(--gray2);
+    }
+
+    .btn-small {
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+    }
+
+    .btn-danger {
+      background: #EF4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #DC2626;
+    }
+
+    /* ===== MODAL ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--white);
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--gray3);
+    }
+
+    /* ===== CONTROLS ===== */
+    .controls {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      background: var(--white);
+      padding: 1rem;
+      border-radius: 12px;
+    }
+
+    .search-box {
+      flex: 1;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--gray2);
+      border-radius: 8px;
+    }
+
+    .filter-select {
+      padding: 0.75rem;
+      border: 1px solid var(--gray2);
+      border-radius: 8px;
+      background: var(--white);
+      cursor: pointer;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .admin-container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid var(--gray2);
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .table {
+        font-size: 0.85rem;
+      }
+
+      .table th, .table td {
+        padding: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">CampusKudi</div>
+      <ul class="sidebar-menu">
+        <li><a href="#" class="menu-link active" data-section="dashboard">📊 Dashboard</a></li>
+        <li><a href="#" class="menu-link" data-section="products">👗 Products</a></li>
+        <li><a href="#" class="menu-link" data-section="categories">🏷️ Categories</a></li>
+        <li><a href="#" class="menu-link" data-section="orders">📦 Orders</a></li>
+        <li><a href="#" class="menu-link" data-section="users">👥 Users</a></li>
+        <li><a href="#" class="menu-link" data-section="reviews">⭐ Reviews</a></li>
+        <li><a href="#" class="menu-link" data-section="coupons">🎟️ Coupons</a></li>
+        <li><a href="#" class="menu-link" data-section="analytics">📈 Analytics</a></li>
+      </ul>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+      <!-- Header -->
+      <div class="header">
+        <h1>CampusKudi Admin Dashboard</h1>
+        <div class="user-info">
+          <span id="adminName">Admin User</span>
+          <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+      </div>
+
+      <!-- ===== DASHBOARD SECTION ===== -->
+      <section id="dashboard" class="section active">
+        <h2 class="section-title">Dashboard Overview</h2>
+        
+        <div class="cards-grid">
+          <div class="stat-card">
+            <div class="stat-card-label">Total Orders</div>
+            <div class="stat-card-value" id="totalOrders">0</div>
+            <div class="stat-card-change">↑ 12% from last month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Total Revenue</div>
+            <div class="stat-card-value" id="totalRevenue">₹0</div>
+            <div class="stat-card-change">↑ 18% from last month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Total Users</div>
+            <div class="stat-card-value" id="totalUsers">0</div>
+            <div class="stat-card-change">↑ 8% from last month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Total Products</div>
+            <div class="stat-card-value" id="totalProducts">0</div>
+            <div class="stat-card-change">↑ 5 new this month</div>
+          </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top: 2rem;">Recent Orders</h2>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="recentOrdersBody">
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 2rem;">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== PRODUCTS SECTION ===== -->
+      <section id="products" class="section">
+        <h2 class="section-title">Product Management</h2>
+        
+        <div class="controls">
+          <div class="search-box">
+            <input type="text" placeholder="Search products..." id="productSearch">
+          </div>
+          <button class="btn-primary" onclick="openProductModal()">+ Add Product</button>
+        </div>
+
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="productsBody">
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 2rem;">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== ORDERS SECTION ===== -->
+      <section id="orders" class="section">
+        <h2 class="section-title">Order Management</h2>
+        
+        <div class="controls">
+          <select class="filter-select" id="orderStatusFilter" onchange="filterOrders()">
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="processing">Processing</option>
+            <option value="shipped">Shipped</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <div class="search-box">
+            <input type="text" placeholder="Search order ID..." id="orderSearch">
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Total Amount</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ordersBody">
+              <tr>
+                <td colspan="6" style="text-align: center; padding: 2rem;">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== USERS SECTION ===== -->
+      <section id="users" class="section">
+        <h2 class="section-title">User Management</h2>
+        
+        <div class="controls">
+          <div class="search-box">
+            <input type="text" placeholder="Search users..." id="userSearch">
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Joined</th>
+                <th>Orders</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersBody">
+              <tr>
+                <td colspan="6" style="text-align: center; padding: 2rem;">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== REVIEWS SECTION ===== -->
+      <section id="reviews" class="section">
+        <h2 class="section-title">Review Moderation</h2>
+        
+        <div class="controls">
+          <select class="filter-select" id="reviewStatusFilter" onchange="filterReviews()">
+            <option value="pending">Pending Approval</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>User</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="reviewsBody">
+              <tr>
+                <td colspan="6" style="text-align: center; padding: 2rem;">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== COUPONS SECTION ===== -->
+      <section id="coupons" class="section">
+        <h2 class="section-title">Coupon Management</h2>
+        
+        <button class="btn-primary" onclick="openCouponModal()">+ Create Coupon</button>
+
+        <div class="table-container" style="margin-top: 1.5rem;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Type</th>
+                <th>Value</th>
+                <th>Usage</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="couponsBody">
+              <tr>
+                <td colspan="6" style="text-align: center; padding: 2rem;">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== CATEGORIES SECTION ===== -->
+      <section id="categories" class="section">
+        <h2 class="section-title">Category Management</h2>
+        
+        <button class="btn-primary" onclick="openCategoryModal()">+ Add Category</button>
+
+        <div class="table-container" style="margin-top: 1.5rem;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Slug</th>
+                <th>Order</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="categoriesBody">
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 2rem;">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== ANALYTICS SECTION ===== -->
+      <section id="analytics" class="section">
+        <h2 class="section-title">Analytics</h2>
+        
+        <div style="background: var(--white); padding: 2rem; border-radius: 12px; text-align: center;">
+          <p>Analytics & Reports Dashboard</p>
+          <p style="color: var(--gray3); font-size: 0.9rem; margin-top: 1rem;">
+            Integration with charts library (Chart.js) for detailed analytics
+          </p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ===== MODALS ===== -->
+  <div id="productModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Add/Edit Product</h2>
+        <button class="close-btn" onclick="closeModal('productModal')">×</button>
+      </div>
+      <form id="productForm" onsubmit="handleProductSubmit(event)">
+        <div class="form-group">
+          <label>Product Name</label>
+          <input type="text" id="productName" required>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="productDescription" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="productCategory" required></select>
+        </div>
+        <div class="form-group">
+          <label>Price (₹)</label>
+          <input type="number" id="productPrice" required>
+        </div>
+        <div class="form-group">
+          <label>Stock</label>
+          <input type="number" id="productStock" required>
+        </div>
+        <button type="submit" class="btn-primary">Save Product</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="orderModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Update Order Status</h2>
+        <button class="close-btn" onclick="closeModal('orderModal')">×</button>
+      </div>
+      <form id="orderForm" onsubmit="handleOrderSubmit(event)">
+        <div class="form-group">
+          <label>New Status</label>
+          <select id="orderStatus" required>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="processing">Processing</option>
+            <option value="shipped">Shipped</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tracking Number (if applicable)</label>
+          <input type="text" id="trackingNumber">
+        </div>
+        <div class="form-group">
+          <label>Courier</label>
+          <input type="text" id="courier">
+        </div>
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea id="orderNote"></textarea>
+        </div>
+        <button type="submit" class="btn-primary">Update Order</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="reviewModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Review Moderation</h2>
+        <button class="close-btn" onclick="closeModal('reviewModal')">×</button>
+      </div>
+      <form id="reviewForm" onsubmit="handleReviewSubmit(event)">
+        <div id="reviewContent"></div>
+        <div class="form-group">
+          <label>Decision</label>
+          <select id="reviewDecision" required>
+            <option value="">Select Action</option>
+            <option value="approved">Approve</option>
+            <option value="rejected">Reject</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Admin Response</label>
+          <textarea id="reviewResponse"></textarea>
+        </div>
+        <button type="submit" class="btn-primary">Submit Decision</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:5000/api';
+    let authToken = localStorage.getItem('adminToken');
+
+    // Check authentication
+    if (!authToken) {
+      window.location.href = '/admin/login.html';
+    }
+
+    // ===== NAVIGATION =====
+    document.querySelectorAll('.menu-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const sectionId = link.dataset.section;
+        
+        // Hide all sections
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        
+        // Show selected section
+        document.getElementById(sectionId).classList.add('active');
+        
+        // Update active link
+        document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        
+        // Load section data
+        loadSectionData(sectionId);
+      });
+    });
+
+    // ===== LOAD DASHBOARD DATA =====
+    async function loadDashboard() {
+      try {
+        const response = await fetch(`${API_URL}/admin/dashboard`, {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+          document.getElementById('totalOrders').textContent = data.stats.totalOrders;
+          document.getElementById('totalRevenue').textContent = '₹' + data.stats.totalRevenue.toLocaleString();
+          document.getElementById('totalUsers').textContent = data.stats.totalUsers;
+          document.getElementById('totalProducts').textContent = data.stats.totalProducts;
+          
+          // Load recent orders
+          loadRecentOrders(data.stats.recentOrders);
+        }
+      } catch (error) {
+        console.error('Error loading dashboard:', error);
+      }
+    }
+
+    function loadRecentOrders(orders) {
+      const tbody = document.getElementById('recentOrdersBody');
+      tbody.innerHTML = orders.map(order => `
+        <tr>
+          <td>${order.orderId}</td>
+          <td>${order.user.name}</td>
+          <td>₹${order.totalAmount}</td>
+          <td><span class="status-badge status-${order.orderStatus}">${order.orderStatus}</span></td>
+          <td>${new Date(order.createdAt).toLocaleDateString()}</td>
+        </tr>
+      `).join('');
+    }
+
+    // ===== LOAD PRODUCTS =====
+    async function loadProducts() {
+      try {
+        const response = await fetch(`${API_URL}/products?limit=100`, {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+          const tbody = document.getElementById('productsBody');
+          tbody.innerHTML = data.products.map(product => `
+            <tr>
+              <td>${product.name}</td>
+              <td>${product.category?.name || 'N/A'}</td>
+              <td>₹${product.finalPrice}</td>
+              <td>${product.totalStock}</td>
+              <td>
+                <button class="btn-secondary btn-small" onclick="editProduct('${product._id}')">Edit</button>
+                <button class="btn-danger btn-small" onclick="deleteProduct('${product._id}')">Delete</button>
+              </td>
+            </tr>
+          `).join('');
+        }
+      } catch (error) {
+        console.error('Error loading products:', error);
+      }
+    }
+
+    // ===== LOAD ORDERS =====
+    async function loadOrders() {
+      try {
+        const response = await fetch(`${API_URL}/admin/orders?limit=100`, {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+          const tbody = document.getElementById('ordersBody');
+          tbody.innerHTML = data.orders.map(order => `
+            <tr>
+              <td>${order.orderId}</td>
+              <td>${order.user?.name || 'N/A'}</td>
+              <td>₹${order.totalAmount}</td>
+              <td><span class="status-badge status-${order.orderStatus}">${order.orderStatus}</span></td>
+              <td>${new Date(order.createdAt).toLocaleDateString()}</td>
+              <td>
+                <button class="btn-secondary btn-small" onclick="editOrder('${order._id}')">Update</button>
+              </td>
+            </tr>
+          `).join('');
+        }
+      } catch (error) {
+        console.error('Error loading orders:', error);
+      }
+    }
+
+    // ===== LOAD USERS =====
+    async function loadUsers() {
+      try {
+        const response = await fetch(`${API_URL}/admin/users?limit=100`, {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+          const tbody = document.getElementById('usersBody');
+          tbody.innerHTML = data.users.map(user => `
+            <tr>
+              <td>${user.name}</td>
+              <td>${user.email}</td>
+              <td>${user.phone || '-'}</td>
+              <td>${new Date(user.createdAt).toLocaleDateString()}</td>
+              <td>0</td>
+              <td>
+                <button class="btn-secondary btn-small" onclick="viewUser('${user._id}')">View</button>
+              </td>
+            </tr>
+          `).join('');
+        }
+      } catch (error) {
+        console.error('Error loading users:', error);
+      }
+    }
+
+    // ===== LOAD REVIEWS =====
+    async function loadReviews() {
+      try {
+        const status = document.getElementById('reviewStatusFilter').value || 'pending';
+        const response = await fetch(`${API_URL}/admin/reviews?status=${status}&limit=100`, {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+          const tbody = document.getElementById('reviewsBody');
+          tbody.innerHTML = data.reviews.map(review => `
+            <tr>
+              <td>${review.product?.name || 'N/A'}</td>
+              <td>${review.user?.name || 'N/A'}</td>
+              <td>⭐ ${review.rating}</td>
+              <td>${review.comment.substring(0, 50)}...</td>
+              <td><span class="status-badge status-${review.status}">${review.status}</span></td>
+              <td>
+                <button class="btn-secondary btn-small" onclick="moderateReview('${review._id}')">Review</button>
+              </td>
+            </tr>
+          `).join('');
+        }
+      } catch (error) {
+        console.error('Error loading reviews:', error);
+      }
+    }
+
+    // ===== LOAD COUPONS =====
+    async function loadCoupons() {
+      try {
+        const response = await fetch(`${API_URL}/admin/coupons`, {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+          const tbody = document.getElementById('couponsBody');
+          tbody.innerHTML = data.coupons.map(coupon => `
+            <tr>
+              <td>${coupon.code}</td>
+              <td>${coupon.discountType === 'percentage' ? '%' : '₹'}</td>
+              <td>${coupon.discountValue}</td>
+              <td>${coupon.usageCount} / ${coupon.maxUsageTotal || '∞'}</td>
+              <td><span class="status-badge ${coupon.isActive ? 'status-approved' : 'status-rejected'}">${coupon.isActive ? 'Active' : 'Inactive'}</span></td>
+              <td>
+                <button class="btn-secondary btn-small" onclick="editCoupon('${coupon._id}')">Edit</button>
+                <button class="btn-danger btn-small" onclick="deleteCoupon('${coupon._id}')">Delete</button>
+              </td>
+            </tr>
+          `).join('');
+        }
+      } catch (error) {
+        console.error('Error loading coupons:', error);
+      }
+    }
+
+    // ===== MODAL FUNCTIONS =====
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    function openProductModal() {
+      openModal('productModal');
+    }
+
+    function openCouponModal() {
+      openModal('couponModal');
+    }
+
+    function openCategoryModal() {
+      openModal('categoryModal');
+    }
+
+    function editOrder(orderId) {
+      openModal('orderModal');
+      // Populate form with order data
+    }
+
+    function editProduct(productId) {
+      openModal('productModal');
+      // Populate form with product data
+    }
+
+    function moderateReview(reviewId) {
+      openModal('reviewModal');
+      // Populate form with review data
+    }
+
+    // ===== FORM HANDLERS =====
+    async function handleProductSubmit(event) {
+      event.preventDefault();
+      // Handle product creation/update
+      closeModal('productModal');
+      loadProducts();
+    }
+
+    async function handleOrderSubmit(event) {
+      event.preventDefault();
+      // Handle order update
+      closeModal('orderModal');
+      loadOrders();
+    }
+
+    async function handleReviewSubmit(event) {
+      event.preventDefault();
+      // Handle review moderation
+      closeModal('reviewModal');
+      loadReviews();
+    }
+
+    // ===== DELETE FUNCTIONS =====
+    async function deleteProduct(productId) {
+      if (confirm('Are you sure?')) {
+        // Handle deletion
+        loadProducts();
+      }
+    }
+
+    async function deleteCoupon(couponId) {
+      if (confirm('Are you sure?')) {
+        // Handle deletion
+        loadCoupons();
+      }
+    }
+
+    function filterOrders() {
+      loadOrders();
+    }
+
+    function filterReviews() {
+      loadReviews();
+    }
+
+    // ===== LOGOUT =====
+    function logout() {
+      localStorage.removeItem('adminToken');
+      window.location.href = '/admin/login.html';
+    }
+
+    // ===== LOAD SECTION DATA =====
+    function loadSectionData(sectionId) {
+      switch(sectionId) {
+        case 'dashboard':
+          loadDashboard();
+          break;
+        case 'products':
+          loadProducts();
+          break;
+        case 'orders':
+          loadOrders();
+          break;
+        case 'users':
+          loadUsers();
+          break;
+        case 'reviews':
+          loadReviews();
+          break;
+        case 'coupons':
+          loadCoupons();
+          break;
+      }
+    }
+
+    // Initial load
+    loadDashboard();
+  </script>
+</body>
+</html>

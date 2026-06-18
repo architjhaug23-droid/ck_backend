@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusKudi Admin Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --pink: #E91E8C;
+      --pink-light: #FCE4F3;
+      --pink-dark: #B0146A;
+      --black: #1A1A1A;
+      --gray: #F7F3F5;
+      --gray2: #EDE8EA;
+      --gray3: #9A8F93;
+      --white: #FFFFFF;
+      --font-display: 'Playfair Display', serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: linear-gradient(135deg, var(--pink-light) 0%, var(--white) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: var(--black);
+    }
+
+    .login-container {
+      background: var(--white);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(233, 30, 140, 0.15);
+      width: 100%;
+      max-width: 420px;
+      padding: 3rem 2rem;
+      animation: slideIn 0.5s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: var(--pink);
+      text-align: center;
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--gray3);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.6rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--black);
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.9rem;
+      border: 1.5px solid var(--gray2);
+      border-radius: 10px;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--pink);
+      box-shadow: 0 0 0 3px var(--pink-light);
+    }
+
+    .form-group input::placeholder {
+      color: var(--gray3);
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 1rem;
+      background: var(--pink);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 1rem;
+    }
+
+    .btn-login:hover {
+      background: var(--pink-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(233, 30, 140, 0.3);
+    }
+
+    .btn-login:active {
+      transform: translateY(0);
+    }
+
+    .btn-login.loading {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .remember-me input {
+      width: auto;
+      cursor: pointer;
+    }
+
+    .forgot-password {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .forgot-password a {
+      color: var(--pink);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
+
+    .error-message {
+      background: #FEE2E2;
+      color: #991B1B;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+      animation: shake 0.4s;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 2rem 0;
+      color: var(--gray3);
+      font-size: 0.85rem;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gray2);
+    }
+
+    .divider span {
+      margin: 0 1rem;
+    }
+
+    .info-box {
+      background: var(--pink-light);
+      border-left: 4px solid var(--pink);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--pink-dark);
+    }
+
+    .info-box strong {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 2rem 1.5rem;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+      }
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 0.5rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo">CampusKudi</div>
+    <p class="subtitle">Admin Dashboard Login</p>
+
+    <div id="errorMessage" class="error-message"></div>
+
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="admin@campuskudi.com"
+          required
+          autocomplete="email"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="••••••••"
+          required
+          autocomplete="current-password"
+        >
+      </div>
+
+      <div class="remember-me">
+        <input type="checkbox" id="remember" name="remember">
+        <label for="remember" style="margin: 0;">Remember me</label>
+      </div>
+
+      <button type="submit" class="btn-login" id="loginBtn">
+        Sign In
+      </button>
+    </form>
+
+    <div class="forgot-password">
+      <a href="#">Forgot password?</a>
+    </div>
+
+    <div class="divider">
+      <span>ADMIN ONLY</span>
+    </div>
+
+    <div class="info-box">
+      <strong>Demo Credentials (Development)</strong>
+      📧 admin@campuskudi.com<br>
+      🔐 Admin@123
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:5000/api';
+
+    async function handleLogin(event) {
+      event.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const remember = document.getElementById('remember').checked;
+      const loginBtn = document.getElementById('loginBtn');
+      const errorMessage = document.getElementById('errorMessage');
+
+      // Clear error
+      errorMessage.classList.remove('show');
+
+      // Disable button and show loading
+      loginBtn.disabled = true;
+      const originalText = loginBtn.textContent;
+      loginBtn.innerHTML = '<span class="loading-spinner"></span>Signing in...';
+      loginBtn.classList.add('loading');
+
+      try {
+        const response = await fetch(`${API_URL}/auth/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Save token
+          localStorage.setItem('adminToken', data.token);
+          localStorage.setItem('adminUser', JSON.stringify(data.user));
+
+          // Redirect to admin panel
+          setTimeout(() => {
+            window.location.href = '/admin-panel.html';
+          }, 500);
+        } else {
+          throw new Error(data.message || 'Login failed');
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        errorMessage.textContent = error.message || 'Invalid email or password';
+        errorMessage.classList.add('show');
+
+        // Re-enable button
+        loginBtn.disabled = false;
+        loginBtn.textContent = originalText;
+        loginBtn.classList.remove('loading');
+      }
+    }
+
+    // Check if already logged in
+    if (localStorage.getItem('adminToken')) {
+      window.location.href = '/admin-panel.html';
+    }
+
+    // Focus on email input on page load
+    document.getElementById('email').focus();
+  </script>
+</body>
+</html>
